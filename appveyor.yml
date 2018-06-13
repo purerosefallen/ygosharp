@@ -1,0 +1,38 @@
+version: '{build}'
+
+platform: x86
+configuration: Release
+
+install:
+  - git submodule update --init --recursive
+  - cmake OCGCore "Visual Studio 14 2015"
+
+build:
+  - project: ocgcore.sln
+    parallel: true
+  - project: YGOSharp.sln
+    parallel: true
+
+after_build:
+  - mv -f bin/Release output
+  - cd output
+  - mv -f ../Release/ocgcore.dll .
+  - 7z a -mx9 ../YGOSharp.7z ./*
+  - cd ..
+  
+test: off
+
+artifacts:
+  - path: YGOSharp.7z
+    name: YGOSharp
+
+deploy:
+  release: latest
+  description: 'Automatic build commit $(APPVEYOR_REPO_COMMIT) $(APPVEYOR_REPO_COMMIT_TIMESTAMP)'
+  provider: GitHub
+  force_update: true
+  auth_token:
+    secure: EQ9miMjfX/QAoBvgc6D+JLmHatLyxOEKZ/uo68QijxWW5Gp4MzB/pOH9+u2GlDVO
+  on:
+    branch: master
+

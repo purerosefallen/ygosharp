@@ -112,6 +112,7 @@ include_directories (
 )
 
 add_definitions(-DLUA_COMPAT_5_2)
+add_definitions(-DYGOPRO_USE_YGOSHARP)
 
 add_library (ocgcore SHARED
   ${OCGCORE_SRC}

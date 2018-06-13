@@ -441,7 +441,7 @@ namespace YGOSharp
             else
             {
                 packet.WriteUnicode(msg, msg.Length + 1);
-                SendToAllBut(packet, player);
+                SendToAll(packet);
             }
             if (OnPlayerChat != null)
             {
@@ -455,7 +455,7 @@ namespace YGOSharp
             BinaryWriter packet = GamePacketFactory.Create(StocMessage.Chat);
             packet.Write((short)PlayerType.Yellow);
             packet.WriteUnicode(finalmsg, finalmsg.Length + 1);
-            SendToAllBut(packet, player);
+            SendToAll(packet);
         }
 
         public void SetReady(Player player, bool ready)

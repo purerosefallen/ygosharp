@@ -307,3 +307,9 @@ OpenCover/
 # YGOSharp
 
 build/
+/*.dll
+/*.cdb
+/*.conf
+/script
+/ygopro-scripts
+/*.so

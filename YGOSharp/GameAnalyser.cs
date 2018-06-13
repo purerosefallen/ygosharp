@@ -288,6 +288,11 @@ namespace YGOSharp
                     else
                         Game.SendToAll(packet);
                     break;
+                case 11:
+                case 12:
+                case 13:
+                    Game.SendToAll(packet);
+                    break;
             }
         }
 
@@ -584,7 +589,12 @@ namespace YGOSharp
             Game.TimeReset();
             if (!Game.IsTag)
                 Game.RefreshAll();
-            Game.CurrentPlayer = msg.Reader.ReadByte();
+            int r_player = msg.Reader.ReadByte();
+            if (rplayer & 0x2) {
+                SendToAll(msg);
+                return;
+            }
+            Game.CurrentPlayer = r_player;
             SendToAll(msg);
 
             Game.TurnCount++;

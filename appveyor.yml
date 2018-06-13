@@ -6,15 +6,14 @@ configuration: Release
 install:
   - git submodule update --init --recursive
   - cmake OCGCore "Visual Studio 14 2015"
+  - msbuild ocgcore.sln /m /p:Configuration=Release
 
 build:
-  - project: ocgcore.sln
-    parallel: true
-  - project: YGOSharp.sln
+    project: YGOSharp.sln
     parallel: true
 
 after_build:
-  - mv -f bin/Release output
+  - mv -f YGOSharp/bin/Release output
   - cd output
   - mv -f ../Release/ocgcore.dll .
   - 7z a -mx9 ../YGOSharp.7z ./*

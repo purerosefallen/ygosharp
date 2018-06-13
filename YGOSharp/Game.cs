@@ -299,8 +299,24 @@ namespace YGOSharp
         {
             if (player.Equals(HostPlayer) && State == GameState.Lobby)
             {
-                _server.Stop();
-                return;
+                bool found = false;
+                foreach (Player p in Players)
+                {
+                    if (p != null && !p.Equals(player))
+                    {
+                        HostPlayer = p;
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                {
+                    IsReady[HostPlayer.Type] = false;
+                    HostPlayer.SendTypeChange();
+                } else {
+                    _server.Stop();
+                    return;
+                }
             }
 
             if (player.Type == (int)PlayerType.Observer)

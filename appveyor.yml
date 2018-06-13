@@ -16,6 +16,7 @@ after_build:
   - mv -f YGOSharp/bin/Release output
   - cd output
   - mv -f ../Release/ocgcore.dll .
+  - rm -rf YGOSharp.exe.config
   - 7z a -mx9 ../YGOSharp.7z ./*
   - cd ..
   

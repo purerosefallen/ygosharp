@@ -45,6 +45,7 @@
     <Compile Include="Addons\StandardStreamProtocol.cs" />
     <Compile Include="Banlist.cs" />
     <Compile Include="BanlistManager.cs" />
+    <Compile Include="PortConfig.cs" />
     <Compile Include="ClientCard.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="CoreMessage.cs" />

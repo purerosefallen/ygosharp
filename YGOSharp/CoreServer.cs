@@ -32,7 +32,16 @@ namespace YGOSharp
             Addons.Init(Game);
             try
             {
-                _listener = new NetworkServer(IPAddress.Any, Config.GetInt("Port", DEFAULT_PORT));
+                int port = Config.GetInt("Port", DEFAULT_PORT);
+                if (port == 0) {
+                    port = PortConfig.GetFirstAvailablePort();
+                }
+                if (port < 1)
+                {
+                    throw new Exception("Port "+port+" is unavailable.");
+                }
+                Console.WriteLine(port);
+                _listener = new NetworkServer(IPAddress.Any, port);
                 _listener.ClientConnected += Listener_ClientConnected;
                 _listener.Start();
                 IsRunning = true;

@@ -6,7 +6,7 @@ configuration: Release
 install:
   - git submodule update --init --recursive
   - cmake OCGCore -G "Visual Studio 14 2015"
-  - msbuild ocgcore.sln /m /p:Configuration=Release /p:Platform="Any CPU"
+  - msbuild ocgcore.sln /m /p:Configuration=Release /p:Platform=Win32
 
 build:
     project: YGOSharp.sln

@@ -313,3 +313,5 @@ build/
 /script
 /ygopro-scripts
 /*.so
+/*.exe
+/*.exe.config

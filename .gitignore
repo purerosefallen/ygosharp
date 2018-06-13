@@ -315,3 +315,4 @@ build/
 /*.so
 /*.exe
 /*.exe.config
+/crash_*.txt

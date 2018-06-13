@@ -590,7 +590,7 @@ namespace YGOSharp
             if (!Game.IsTag)
                 Game.RefreshAll();
             int r_player = msg.Reader.ReadByte();
-            if (r_player & 0x2) {
+            if (r_player & 0x2 > 0) {
                 SendToAll(msg);
                 return;
             }

@@ -82,7 +82,7 @@ namespace YGOSharp
                 Console.Error.WriteLine("'Rule' is deprecated, please use 'Region' instead.");
             else
                 Region = Config.GetInt("Region");
-            MasterRule = Config.GetInt("MasterRule", 3);
+            MasterRule = Config.GetInt("MasterRule", 4);
 
             IsMatch = Mode == 1;
             IsTag = Mode == 2;

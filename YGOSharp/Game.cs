@@ -896,6 +896,8 @@ namespace YGOSharp
             _lastresponse = player;
             CurPlayers[player].State = PlayerState.Response;
             SendToAllBut(GamePacketFactory.Create(GameMessage.Waiting), player);
+            if(Timer == 0)
+                return;
             TimeStart();
             BinaryWriter packet = GamePacketFactory.Create(StocMessage.TimeLimit);
             packet.Write((byte)player);

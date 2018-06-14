@@ -11,6 +11,7 @@ namespace YGOSharp
         public string Name { get; private set; }
         public bool IsAuthentified { get; private set; }
         public int Type { get; set; }
+        public bool IsRecorder { get; set; }
         public Deck Deck { get; private set; }
         public PlayerState State { get; set; }
         private YGOClient _client;
@@ -42,7 +43,7 @@ namespace YGOSharp
         public void SendTypeChange()
         {
             BinaryWriter packet = GamePacketFactory.Create(StocMessage.TypeChange);
-            packet.Write((byte)(Type + (Game.HostPlayer.Equals(this) ? (int)PlayerType.Host : 0)));
+            packet.Write((byte)((IsRecorder ? (int)PlayerType.Observer : Type) + (Game.HostPlayer.Equals(this) ? (int)PlayerType.Host : 0)));
             Send(packet);
         }
 
@@ -140,7 +141,13 @@ namespace YGOSharp
 
             packet.ReadInt32();//gameid
             packet.ReadInt16();
-
+            string pass = packet.ReadUnicode(20);
+            if (Game.ReplayRecorder == null && pass.Equals("Marshtomp"))
+            {
+                IsRecorder = true;
+                Game.ReplayRecorder = this;
+            }
+              
             Game.AddPlayer(this);
             IsAuthentified = true;
         }

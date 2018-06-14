@@ -43,6 +43,7 @@ namespace YGOSharp
         public bool[] IsReady { get; private set; }
         public List<Player> Observers { get; private set; }
         public Player HostPlayer { get; private set; }
+        public Player ReplayRecorder { get; set; }
 
         public Replay Replay { get; private set; }
         public int Winner { get; private set; }
@@ -172,6 +173,20 @@ namespace YGOSharp
             foreach (Player player in Observers)
                 if (!player.Equals(except))
                     player.Send(packet);
+            if (ReplayRecorder != null && !ReplayRecorder.Equals(except))
+                SendToReplayRecorder(packet);
+        }
+
+        public void SendToAllBut(BinaryWriter packet, Player except, Player except2)
+        {
+            foreach (Player player in Players)
+                if (player != null && !player.Equals(except) && !player.Equals(except2))
+                    player.Send(packet);
+            foreach (Player player in Observers)
+                if (!player.Equals(except) && !player.Equals(except2))
+                    player.Send(packet);
+            if (ReplayRecorder != null && !ReplayRecorder.Equals(except) && !ReplayRecorder.Equals(except2))
+                SendToReplayRecorder(packet);
         }
 
         public void SendToAllBut(BinaryWriter packet, int except)
@@ -182,6 +197,14 @@ namespace YGOSharp
                 SendToAll(packet);
         }
 
+        public void SendToAllBut(BinaryWriter packet, int except, Player except2)
+        {
+            if (except < CurPlayers.Length)
+                SendToAllBut(packet, CurPlayers[except], except2);
+            else
+                SendToAllBut(packet, except2);
+        }
+
         public void SendToPlayers(BinaryWriter packet)
         {
             foreach (Player player in Players)
@@ -189,10 +212,17 @@ namespace YGOSharp
                     player.Send(packet);
         }
 
-        public void SendToObservers(BinaryWriter packet)
+        public void SendToObservers(BinaryWriter packet, bool to_recorder = true)
         {
             foreach (Player player in Observers)
                 player.Send(packet);
+            if(to_recorder)
+                SendToReplayRecorder(packet);
+        }
+        public void SendToReplayRecorder(BinaryWriter packet)
+        {
+            if (ReplayRecorder != null)
+                ReplayRecorder.Send(packet);
         }
 
         public void SendToTeam(BinaryWriter packet, int team)
@@ -213,7 +243,7 @@ namespace YGOSharp
 
         public void AddPlayer(Player player)
         {
-            if (State != GameState.Lobby)
+            if (State != GameState.Lobby && !player.IsRecorder)
             {
                 player.Type = (int)PlayerType.Observer;
                 if (State != GameState.End)
@@ -232,10 +262,15 @@ namespace YGOSharp
                 return;
             }
 
-            if (HostPlayer == null)
+            if (HostPlayer == null && !player.IsRecorder)
                 HostPlayer = player;
 
             int pos = GetAvailablePlayerPos();
+            if(player.IsRecorder)
+            {
+                player.Type = 9;
+            }
+            else
             if (pos != -1)
             {
                 BinaryWriter enter = GamePacketFactory.Create(StocMessage.HsPlayerEnter);
@@ -318,7 +353,10 @@ namespace YGOSharp
                     return;
                 }
             }
-
+            if(player.IsRecorder)
+            {
+                player.Disconnect();
+            }
             if (player.Type == (int)PlayerType.Observer)
             {
                 Observers.Remove(player);
@@ -441,7 +479,7 @@ namespace YGOSharp
             else
             {
                 packet.WriteUnicode(msg, msg.Length + 1);
-                SendToAll(packet);
+                SendToAllBut(packet, ReplayRecorder);
             }
             if (OnPlayerChat != null)
             {
@@ -455,7 +493,7 @@ namespace YGOSharp
             BinaryWriter packet = GamePacketFactory.Create(StocMessage.Chat);
             packet.Write((short)PlayerType.Yellow);
             packet.WriteUnicode(finalmsg, finalmsg.Length + 1);
-            SendToAll(packet);
+            SendToAllBut(packet, ReplayRecorder);
         }
 
         public void SetReady(Player player, bool ready)
@@ -803,6 +841,7 @@ namespace YGOSharp
                 update.Write((byte)location);
                 update.Write(result);
                 SendToTeam(update, player);
+                SendToReplayRecorder(update);
             }
 
             update = GamePacketFactory.Create(GameMessage.UpdateData);
@@ -813,7 +852,7 @@ namespace YGOSharp
             if (observer == null)
             {
                 SendToTeam(update, 1 - player);
-                SendToObservers(update);
+                SendToObservers(update, false);
             }
             else
             {
@@ -862,6 +901,7 @@ namespace YGOSharp
             update.Write((byte)sequence);
             update.Write(result);
             CurPlayers[player].Send(update);
+            SendToReplayRecorder(update);
 
             if (IsTag)
             {
@@ -874,14 +914,15 @@ namespace YGOSharp
                 else
                 {
                     CurPlayers[player].Send(update);
+                    SendToReplayRecorder(update);
                     if ((location & 0x90) != 0)
-                        SendToAllBut(update, player);
+                        SendToAllBut(update, player, ReplayRecorder);
                 }
             }
             else
             {
                 if ((location & 0x90) != 0 || ((location & 0x2c) != 0 && (result[15] & (int)CardPosition.FaceUp) != 0))
-                    SendToAllBut(update, player);
+                    SendToAllBut(update, player, ReplayRecorder);
             }
         }
 

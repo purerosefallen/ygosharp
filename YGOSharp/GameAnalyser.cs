@@ -538,7 +538,9 @@ namespace YGOSharp
                 packet.Write(0);
 
             SendToPlayer(msg, player);
-            Game.SendToAllBut(packet, player);
+            SendToReplayRecorder(msg);
+
+            Game.SendToAllBut(packet, player, Game.ReplayRecorder);
             Game.RefreshHand(player);
         }
 
@@ -555,7 +557,9 @@ namespace YGOSharp
                 packet.Write(0);
 
             SendToPlayer(msg, player);
-            Game.SendToAllBut(packet, player);
+            SendToReplayRecorder(msg);
+
+            Game.SendToAllBut(packet, player, Game.ReplayRecorder);
             Game.RefreshHand(player);
         }
 
@@ -703,8 +707,9 @@ namespace YGOSharp
             }
 
             SendToTeam(msg, player);
+            SendToReplayRecorder(msg);
             SendToOpponentTeam(packet, player);
-            Game.SendToObservers(packet);
+            Game.SendToObservers(packet, false);
         }
 
         private void OnLpUpdate(CoreMessage msg)
@@ -874,6 +879,14 @@ namespace YGOSharp
             BinaryWriter packet = GamePacketFactory.Create(msg.Message);
             packet.Write(buffer);
             Game.CurPlayers[player].Send(packet);
+        }
+
+        private void SendToReplayRecorder(CoreMessage msg)
+        {
+            byte[] buffer = msg.CreateBuffer();
+            BinaryWriter packet = GamePacketFactory.Create(msg.Message);
+            packet.Write(buffer);
+            Game.SendToReplayRecorder(packet);
         }
 
         private void SendToTeam(CoreMessage msg, int player)

@@ -443,14 +443,12 @@ namespace YGOSharp
         {
             if (State != GameState.Lobby)
                 return;
-            if (player.Type == (int)PlayerType.Observer)
+            if (player.Type == (int)PlayerType.Observer || player.IsRecorder)
                 return;
             if (IsReady[player.Type])
                 return;
 
             int oldType = player.Type;
-            if (oldType > 3 || (oldType > 1 && !IsTag))
-                return;
 
             Players[player.Type] = null;
             IsReady[player.Type] = false;

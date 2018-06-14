@@ -989,7 +989,7 @@ namespace YGOSharp
                     byte[] replayData = Replay.GetContent();
                     BinaryWriter packet = GamePacketFactory.Create(StocMessage.Replay);
                     packet.Write(replayData);
-                    if (Config.GetInt("SRVProBlockReplay", 0) != 1)
+                    if (Config.GetInt("SRVProReplayMode", 0) != 1)
                     {
                         SendToAll(packet);
                     }

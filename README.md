@@ -20,7 +20,7 @@ A C# implementation of an ygopro duel server, using the ocgcore library.
 
 * `ConfigFile` (default: none)
 
-* `ClientVersion` (default: `0x133D`)
+* `ClientVersion` (default: `0x1344`)
 
 * `Port` (default: `7911`)
 
@@ -40,7 +40,7 @@ A C# implementation of an ygopro duel server, using the ocgcore library.
 
 * `Region` (default: `0`)
 
-* `MasterRule` (default: `3`)
+* `MasterRule` (default: `4`)
 
 * `Banlist` (default: `0`)
 
@@ -75,4 +75,8 @@ A C# implementation of an ygopro duel server, using the ocgcore library.
 ### Addons
 
 * `StandardStreamProtocol`  (default: `false`)
+
+* `SRVProMode`  (default: `true`)
+
+* `SRVProReplayMode`  (default: `0`)
 

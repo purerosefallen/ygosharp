@@ -33,14 +33,17 @@ namespace YGOSharp
             try
             {
                 int port = Config.GetInt("Port", DEFAULT_PORT);
-                if (port == 0) {
+                if (Config.GetBool("SRVProMode", false)) {
                     port = PortConfig.GetFirstAvailablePort();
                 }
                 if (port < 1)
                 {
                     throw new Exception("Port "+port+" is unavailable.");
                 }
-                Console.WriteLine(port);
+                if(Config.GetBool("SRVProMode", false))
+                {
+                    Console.WriteLine(port);
+                }
                 _listener = new NetworkServer(IPAddress.Any, port);
                 _listener.ClientConnected += Listener_ClientConnected;
                 _listener.Start();

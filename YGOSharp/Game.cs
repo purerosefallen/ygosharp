@@ -946,7 +946,14 @@ namespace YGOSharp
                     byte[] replayData = Replay.GetContent();
                     BinaryWriter packet = GamePacketFactory.Create(StocMessage.Replay);
                     packet.Write(replayData);
-                    SendToAll(packet);
+                    if (Config.GetInt("SRVProBlockReplay", 0) != 1)
+                    {
+                        SendToAll(packet);
+                    }
+                    else
+                    {
+                        SendToPlayers(packet);
+                    }
                 }
 
                 _duel.End();

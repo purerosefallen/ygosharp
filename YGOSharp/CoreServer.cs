@@ -51,9 +51,9 @@ namespace YGOSharp
                 IsListening = true;
                 Game.Start();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //ignore
+                Console.Error.WriteLine(ex.ToString());
             }
         }
 

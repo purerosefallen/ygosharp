@@ -449,6 +449,8 @@ namespace YGOSharp
                 return;
 
             int oldType = player.Type;
+            if (oldType > 3 || (oldType > 1 && !IsTag))
+                return;
 
             Players[player.Type] = null;
             IsReady[player.Type] = false;

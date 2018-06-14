@@ -136,10 +136,16 @@ namespace YGOSharp
 
             int version = packet.ReadInt16();
             if (version != Program.ClientVersion)
+            {
+                BinaryWriter error = GamePacketFactory.Create(StocMessage.ErrorMsg);
+                error.Write((byte)4);
+                error.Write(Program.ClientVersion);
+                Send(error);
                 return;
+            }
 
             packet.ReadInt32();//gameid
-            packet.ReadInt16();
+            packet.ReadUnicode(20); //pass
 
             Game.AddPlayer(this);
             IsAuthentified = true;

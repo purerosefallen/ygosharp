@@ -76,7 +76,7 @@ A C# implementation of an ygopro duel server, using the ocgcore library.
 
 * `StandardStreamProtocol`  (default: `false`)
 
-* `SRVProMode`  (default: `true`)
+* `SRVProMode`  (default: `false`)
 
 * `SRVProReplayMode`  (default: `0`)
 
